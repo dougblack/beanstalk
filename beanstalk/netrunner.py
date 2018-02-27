@@ -29,3 +29,6 @@ class Cards(NRDBResource):
 
 class Factions(NRDBResource):
     location = '/factions'
+
+class Packs(NRDBResource):
+    location = '/packs'

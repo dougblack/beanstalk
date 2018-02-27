@@ -2,7 +2,7 @@ import re
 
 from discord import Embed
 
-from beanstalk.cached import FACTION_COLORS, FACTION_NAMES
+from beanstalk.cached import FACTION_COLORS, FACTION_NAMES, PACK_NAMES
 
 
 IMAGE_TEMPLATE = 'https://netrunnerdb.com/card_image/{code}.png'
@@ -96,7 +96,11 @@ class TextEmbed(NREmbed):
         return result
 
     def footer_line(self):
-        footer = ' • '.join([FACTION_NAMES[self.card['faction_code']], self.card['illustrator'], self.card['pack_code']])
+        footer = ' • '.join([
+            FACTION_NAMES[self.card['faction_code']],
+            self.card['illustrator'],
+            PACK_NAMES[self.card['pack_code']] + ' ' + self.card['position'],
+        ])
         return footer
 
     def render(self):
