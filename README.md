@@ -13,5 +13,5 @@ make install
 ### Usage:
 
 ```
-BEANSTALK_TOKEN=<bot token> python beanstalk/bot.py
+BEANSTALK_TOKEN=<bot_token> python beanstalk/bot.py
 ```
