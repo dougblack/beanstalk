@@ -26,6 +26,7 @@ class ImageMessage(Message):
     def render(self):
         embed = Embed(
             type='rich',
+            title=self.card['title'],
             url=self.url(self.card),
         )
         embed.set_image(url=self.image(self.card))
