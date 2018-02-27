@@ -88,4 +88,4 @@ class TextEmbed(NREmbed):
 
         if 'flavor' in self.card:
             self.embed.set_footer(text=self.card['flavor'])
-        self.return embed
+        return self.embed
