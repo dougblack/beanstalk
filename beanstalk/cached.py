@@ -7,4 +7,4 @@ pack_resp = Packs().all()['data']
 CARDS = {c['title']: c for c in card_resp}
 FACTION_COLORS = {f['code']: int(f['color'], 16) for f in faction_resp}
 FACTION_NAMES = {f['code']: f['name'] for f in faction_resp}
-PACK_NAMES = {p['code']: p['name'] for c in pack_resp}
+PACK_NAMES = {p['code']: p['name'] for p in pack_resp}
