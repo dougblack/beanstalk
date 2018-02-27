@@ -11,5 +11,7 @@ setup(
     install_requires=[
         'requests',
         'discord.py',
+        'fuzzywuzzy',
+        'python-Levenshtein',
     ],
 )

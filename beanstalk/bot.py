@@ -1,6 +1,7 @@
 import os
 import re
 
+from fuzzywuzzy import process
 from discord.ext import commands
 from discord import Embed
 
@@ -38,7 +39,8 @@ async def on_message(message):
     embed, match = choose_embed(match)
 
     try:
-        card = CARDS[match]
+        target = process.extract(match, CARDS.keys(), limit=1)[0][0]
+        card = CARDS[target]
     except Exception:
         await bot.send_message(message.channel, 'Unknown card')
         return
