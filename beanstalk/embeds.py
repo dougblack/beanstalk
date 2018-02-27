@@ -100,7 +100,6 @@ class TextEmbed(NREmbed):
         return footer
 
     def render(self):
-
         self.embed.add_field(
             name=self.type_line(),
             value=self.text_line(),
