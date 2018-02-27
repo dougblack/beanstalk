@@ -1,4 +1,5 @@
 import os
+import json
 import re
 
 from fuzzywuzzy import process
@@ -45,6 +46,7 @@ async def on_message(message):
         return
 
     embed = embed(card)
+    print(json.dumps(embed.render().to_dict()))
     await bot.send_message(message.channel, embed=embed.render())
 
 
