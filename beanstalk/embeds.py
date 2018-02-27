@@ -98,7 +98,7 @@ class TextEmbed(NREmbed):
     def footer_line(self):
         footer = ' • '.join([
             FACTION_NAMES[self.card['faction_code']],
-            self.card['illustrator'],
+            self.card['illustrator'] if 'illustrator' in self.card else 'No Illustrator',
             PACK_NAMES[self.card['pack_code']] + ' ' + str(self.card['position']),
         ])
         return footer
