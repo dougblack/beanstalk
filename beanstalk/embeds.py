@@ -35,9 +35,27 @@ class ImageEmbed(NREmbed):
 
 class TextEmbed(NREmbed):
     def type_line(self):
-        result = '**{}**'.format(self.card['type_code']).title()
+        result = '{}'.format(self.card['type_code']).title()
         if 'keywords' in self.card:
             result += ': {}'.format(self.card['keywords'])
+        cost_string = {
+            'asset': 'Rez',
+            'ice': 'Rez',
+            'upgrade': 'Rez',
+            'operation': 'Cost',
+            'event': 'Cost',
+            'program': 'Install',
+            'resource': 'Install',
+            'hardware': 'Install',
+        }
+        if 'cost' in self.card:
+            result += ' • {}: {}'.format(cost_string[self.card['type_code']], self.card['cost'])
+        elif 'advancement_cost' in self.card:
+            result += ' • Advance: {}'.format(self.card['cost'])
+        if 'trash_cost' in self.card:
+            result += ' • Trash: {}'.format(self.card['trash_cost'])
+        if 'faction_cost' in self.card:
+            result += ' • Influence: {}'.format(self.card['faction_cost'])
         return result
 
     def transform_trace(self, re_obj):
@@ -77,15 +95,19 @@ class TextEmbed(NREmbed):
             result += ' ' + ('•' * self.card['faction_cost'])
         return result
 
+    def footer_line(self):
+        footer = ' • '.join([FACTION_NAMES[self.card['faction_code']], self.card['illustrator'], self.card['pack_code']])
+        return footer
+
     def render(self):
-        self.embed.description = '\n'.join([
-            self.type_line(),
-            self.text_line(),
-            self.influence_line(),
-        ])
+
+        self.embed.add_field(
+            name=self.type_line(),
+            value=self.text_line(),
+        )
         self.embed.colour =  FACTION_COLORS[self.card['faction_code']]
         self.embed.set_thumbnail(url=self.image(self.card))
 
         if 'flavor' in self.card:
-            self.embed.set_footer(text=self.card['flavor'])
+            self.embed.set_footer(text=self.footer_line())
         return self.embed
