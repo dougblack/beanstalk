@@ -1,1 +1,1 @@
-worker: python3 beanstalk/bot.py
+web: python3 beanstalk/bot.py
