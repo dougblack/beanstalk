@@ -8,9 +8,14 @@ from beanstalk.cached import FACTION_COLORS, FACTION_NAMES
 IMAGE_TEMPLATE = 'https://netrunnerdb.com/card_image/{code}.png'
 CARD_VIEW_TEMPLATE = 'https://netrunnerdb.com/en/card/{code}'
 
-class Embed(object):
+class NREmbed(object):
     def __init__(self, card):
         self.card = card
+        self.embed = Embed(
+            type='rich',
+            title=self.card['title'],
+            url=self.url(card),
+        )
 
     def image(self, card):
         return card.get(
@@ -22,18 +27,13 @@ class Embed(object):
         return CARD_VIEW_TEMPLATE.format(code=self.card['code'])
 
 
-class ImageEmbed(Embed):
+class ImageEmbed(NREmbed):
     def render(self):
-        embed = Embed(
-            type='rich',
-            title=self.card['title'],
-            url=self.url(self.card),
-        )
-        embed.set_image(url=self.image(self.card))
-        return embed
+        self.embed.set_image(url=self.image(self.card))
+        return self.embed
 
 
-class TextEmbed(Embed):
+class TextEmbed(NREmbed):
     def type_line(self):
         result = '**{}**'.format(self.card['type_code']).title()
         if 'keywords' in self.card:
@@ -78,21 +78,14 @@ class TextEmbed(Embed):
         return result
 
     def render(self):
-        description = '\n'.join([
+        self.embed.description = '\n'.join([
             self.type_line(),
             self.text_line(),
             self.influence_line(),
         ])
+        self.embed.colour =  FACTION_COLORS[self.card['faction_code']]
+        self.embed.set_thumbnail(url=self.image(self.card))
 
-        embed = Embed(
-            type='rich',
-            title=self.card['title'],
-            url=self.url(self.card),
-            description=description,
-            colour=FACTION_COLORS[self.card['faction_code']]
-        )
-
-        embed.set_thumbnail(url=self.image(self.card))
         if 'flavor' in self.card:
-            embed.set_footer(text=self.card['flavor'])
-        return embed
+            self.embed.set_footer(text=self.card['flavor'])
+        self.return embed
