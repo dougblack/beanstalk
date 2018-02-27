@@ -86,7 +86,7 @@ class TextMessage(Message):
         embed = Embed(
             type='rich',
             title=self.card['title'],
-            url=self.url(card),
+            url=self.url(self.card),
             description=description,
             colour=FACTION_COLORS[self.card['faction_code']]
         )
