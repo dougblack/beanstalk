@@ -99,7 +99,7 @@ class TextEmbed(NREmbed):
         footer = ' • '.join([
             FACTION_NAMES[self.card['faction_code']],
             self.card['illustrator'],
-            PACK_NAMES[self.card['pack_code']] + ' ' + self.card['position'],
+            PACK_NAMES[self.card['pack_code']] + ' ' + str(self.card['position']),
         ])
         return footer
 
