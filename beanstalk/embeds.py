@@ -8,7 +8,7 @@ from beanstalk.cached import FACTION_COLORS, FACTION_NAMES
 IMAGE_TEMPLATE = 'https://netrunnerdb.com/card_image/{code}.png'
 CARD_VIEW_TEMPLATE = 'https://netrunnerdb.com/en/card/{code}'
 
-class Message(object):
+class Embed(object):
     def __init__(self, card):
         self.card = card
 
@@ -22,7 +22,7 @@ class Message(object):
         return CARD_VIEW_TEMPLATE.format(code=self.card['code'])
 
 
-class ImageMessage(Message):
+class ImageEmbed(Embed):
     def render(self):
         embed = Embed(
             type='rich',
@@ -33,7 +33,7 @@ class ImageMessage(Message):
         return embed
 
 
-class TextMessage(Message):
+class TextEmbed(Embed):
     def type_line(self):
         result = '**{}**'.format(self.card['type_code']).title()
         if 'keywords' in self.card:
