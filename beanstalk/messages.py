@@ -66,7 +66,7 @@ class TextMessage(Message):
 
         result = '\n' + FACTION_NAMES[self.card['faction_code']]
         if 'faction_cost' in self.card:
-            result += ' - {} inf'.format(self.card['faction_cost'])
+            result += ' ' + ('•' * self.card['faction_cost'])
         return result
 
     def render(self):
