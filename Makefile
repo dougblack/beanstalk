@@ -2,6 +2,8 @@
 
 clean:
 	rm -rf venv/
+	rm -rf *.egg-info/
+	rm -rf dist/
 
 venv:
 	virtualenv -p python3 venv
