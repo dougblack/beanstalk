@@ -106,7 +106,5 @@ class TextEmbed(NREmbed):
         )
         self.embed.colour =  FACTION_COLORS[self.card['faction_code']]
         self.embed.set_thumbnail(url=self.image(self.card))
-
-        if 'flavor' in self.card:
-            self.embed.set_footer(text=self.footer_line())
+        self.embed.set_footer(text=self.footer_line())
         return self.embed
