@@ -24,9 +24,11 @@ class Message(object):
 
 class ImageMessage(Message):
     def render(self):
-        embed = Embed(type='rich')
+        embed = Embed(
+            type='rich',
+            url=self.url(self.card),
+        )
         embed.set_image(url=self.image(self.card))
-        embed.set_url(url=self.url(self.card))
         return embed
 
 
@@ -84,12 +86,12 @@ class TextMessage(Message):
         embed = Embed(
             type='rich',
             title=self.card['title'],
+            url=self.url(card),
             description=description,
             colour=FACTION_COLORS[self.card['faction_code']]
         )
 
         embed.set_thumbnail(url=self.image(self.card))
-        embed.set_url(url=self.url(card))
         if 'flavor' in self.card:
             embed.set_footer(text=self.card['flavor'])
         return embed
