@@ -51,7 +51,7 @@ class TextEmbed(NREmbed):
         if 'cost' in self.card:
             result += ' • {}: {}'.format(cost_string[self.card['type_code']], self.card['cost'])
         elif 'advancement_cost' in self.card:
-            result += ' • Advance: {}'.format(self.card['cost'])
+            result += ' • Advance: {}'.format(self.card['advancement_cost'])
         if 'trash_cost' in self.card:
             result += ' • Trash: {}'.format(self.card['trash_cost'])
         if 'faction_cost' in self.card:
