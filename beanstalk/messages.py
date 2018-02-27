@@ -6,6 +6,7 @@ from beanstalk.cached import FACTION_COLORS, FACTION_NAMES
 
 
 IMAGE_TEMPLATE = 'https://netrunnerdb.com/card_image/{code}.png'
+CARD_VIEW_TEMPLATE = 'https://netrunnerdb.com/en/card/{code}'
 
 class Message(object):
     def __init__(self, card):
@@ -17,11 +18,15 @@ class Message(object):
             IMAGE_TEMPLATE.format(code=self.card['code'])
         )
 
+    def url(self, card):
+        return CARD_VIEW_TEMPLATE.format(code=self.card['code'])
+
 
 class ImageMessage(Message):
     def render(self):
         embed = Embed(type='rich')
         embed.set_image(url=self.image(self.card))
+        embed.set_url(url=self.url(self.card))
         return embed
 
 
@@ -84,6 +89,7 @@ class TextMessage(Message):
         )
 
         embed.set_thumbnail(url=self.image(self.card))
+        embed.set_url(url=self.url(card))
         if 'flavor' in self.card:
             embed.set_footer(text=self.card['flavor'])
         return embed

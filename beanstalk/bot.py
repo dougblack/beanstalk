@@ -10,7 +10,6 @@ from beanstalk.cached import CARDS
 
 TOKEN = os.environ.get('BEANSTALK_TOKEN')
 CARD_PATTERN = re.compile('.*\[\[(.*)\]\].*')
-CARD_VIEW_LINK = 'https://netrunnerdb.com/en/card/{}'
 
 bot = commands.Bot(command_prefix='!', description='Netrunner bot')
 
