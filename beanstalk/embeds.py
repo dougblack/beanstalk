@@ -92,7 +92,7 @@ class TextEmbed(NREmbed):
         result = re.sub("(<strong>)(.*?)(</strong>)", "**\g<2>**", result)
 
         if self.card['type_code'] == 'ice':
-            result = '**Strength: {}**\n'.format(self.card['strength']) + result
+            result = '**Strength:** {}\n'.format(self.card['strength']) + result
 
         return result
 
