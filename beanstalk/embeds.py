@@ -8,6 +8,19 @@ from beanstalk.cached import FACTION_COLORS, FACTION_NAMES, PACKS, mwl, CYCLE_RO
 IMAGE_TEMPLATE = 'https://netrunnerdb.com/card_image/{code}.png'
 CARD_VIEW_TEMPLATE = 'https://netrunnerdb.com/en/card/{code}'
 
+
+SUBSTITUTIONS = {
+    "(\[click\])": "<:nrclick:418454127488532480>",
+    "(\[recurring-credit\])": "<:nrrecurringcredit:418457537881440256>",
+    "(\[credit\])": "<:nrcredit:418453466826932229>",
+    "(\[subroutine\])": "<:nrsubroutine:418457881222971403>",
+    "(\[trash\])": "<:nrtrash:418457787689992193>",
+    "(0\[mu\])": "<:nrmu0:418457664293568513>",
+    "(1\[mu\])": "<:nrmu1:418457694354014228>",
+    "(2\[mu\])": "<:nrmu2:418457723621867521>",
+    "(3\[mu\])": "<:nrmu3:418457750906077184>",
+}
+
 class CardEmbed(object):
     def __init__(self, card):
         self.card = card
@@ -84,15 +97,9 @@ class CardText(CardEmbed):
         return ret_string
 
     def text_line(self):
-        result = re.sub("(\[click\])", ":nrclick:", self.text)
-        result = re.sub("(\[recurring-credit\])", ":nrrecurringcredit:", result)
-        result = re.sub("(\[credit\])", ":nrcredit:", result)
-        result = re.sub("(\[subroutine\])", ":nrsubroutine:", result)
-        result = re.sub("(\[trash\])", ":nrtrash:", result)
-        result = re.sub("(0\[mu\])", ":nrmu0:", result)
-        result = re.sub("(1\[mu\])", ":nrmu1:", result)
-        result = re.sub("(2\[mu\])", ":nrmu2:", result)
-        result = re.sub("(3\[mu\])", ":nrmu3:", result)
+        result = self.text
+        for target, sub in SUBSTITUTIONS.items():
+            result = re.sub(target, sub, result)
         result = re.sub("(<trace>Trace )(\d)(</trace>)", self.transform_trace, result, flags=re.I)
         return re.sub("(<strong>)(.*?)(</strong>)", "**\g<2>**", result)
 
