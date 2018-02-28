@@ -116,17 +116,17 @@ class TextEmbed(NREmbed):
             mwl_abbrev = mwl_name[-7:]
             mwl_effect = list(mwl_effects)[0]
             if mwl_effect in ('global_penalty', 'universal_faction_cost'):
-                parts += '{} Universal Influence ({})'.format(
+                parts.append('{} Universal Influence ({})'.format(
                     mwl_effects[mwl_effect], mwl_abbrev,
-                )
+                ))
             elif mwl_effect == 'is_restricted':
-                parts += 'Restricted ({})'.format(
+                parts.append('Restricted ({})'.format(
                     mwl_abbrev,
-                )
+                ))
             elif mwl_effect == 'deck_limit' and mwl_effects[mwl_effect] == 0:
-                parts += 'Banned ({})'.format(
+                parts.append('Banned ({})'.format(
                     mwl_abbrev,
-                )
+                ))
 
 
         footer = ' • '.join(parts)
