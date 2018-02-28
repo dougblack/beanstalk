@@ -111,7 +111,7 @@ class TextEmbed(NREmbed):
         ]
 
         parts.append('{} {}'.format(
-            PACK_NAMES[self.card['pack_code']] + ' (rotated)' if CYCLE_ROTATIONS[self.card['pack_code']] else '',
+            PACK_NAMES[self.card['pack_code']] + (' (rotated)' if CYCLE_ROTATIONS[self.card['pack_code']] else ''),
             self.card['position']
         ))
 
