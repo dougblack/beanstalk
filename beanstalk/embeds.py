@@ -13,7 +13,7 @@ SUBSTITUTIONS = {
     "(\[click\])": "<:nrclick:418454127488532480>",
     "(\[recurring-credit\])": "<:nrrecurringcredit:418457537881440256>",
     "(\[credit\])": "<:nrcredit:418453466826932229>",
-    "(\[subroutine\])": "<:nrsubroutine:418457881222971403>",
+    "(\[subroutine\])": "↳",
     "(\[trash\])": "<:nrtrash:418457787689992193>",
     "(0\[mu\])": "<:nrmu0:418457664293568513>",
     "(1\[mu\])": "<:nrmu1:418457694354014228>",
