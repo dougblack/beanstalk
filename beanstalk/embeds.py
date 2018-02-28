@@ -45,10 +45,13 @@ class TextEmbed(NREmbed):
         elif self.card['type_code'] == 'agenda':
             result += ' • Adv: {}'.format(self.card['advancement_cost'])
             result += ' • Score: {}'.format(self.card['agenda_points'])
+        elif self.card['type_code'] == 'ice':
+            result += ' • Rez: {}'.format(self.card['advancement_cost'])
+            result += ' • Strength: {}'.format(self.card['strength'])
+            result += ' • Influence: {}'.format(self.card['faction_cost'])
         else:
             cost_string = {
                 'asset': 'Rez',
-                'ice': 'Rez',
                 'upgrade': 'Rez',
                 'operation': 'Cost',
                 'event': 'Cost',
@@ -77,8 +80,8 @@ class TextEmbed(NREmbed):
             '8': '⁸',
             '9': '⁹',
         }
-        ret_string = "Trace"
-        ret_string += ss_conv[re_obj.group(2)] + " -"
+        ret_string = "**Trace"
+        ret_string += ss_conv[re_obj.group(2)] + "** -"
         return ret_string
 
     def text_line(self):
@@ -89,12 +92,7 @@ class TextEmbed(NREmbed):
         result = re.sub("(\[trash\])", "🗑", result)
         result = re.sub("(\[mu\])", "μ", result)
         result = re.sub("(<trace>Trace )(\d)(</trace>)", self.transform_trace, result, flags=re.I)
-        result = re.sub("(<strong>)(.*?)(</strong>)", "**\g<2>**", result)
-
-        if self.card['type_code'] == 'ice':
-            result = '**Strength:** {}\n'.format(self.card['strength']) + result
-
-        return result
+        return re.sub("(<strong>)(.*?)(</strong>)", "**\g<2>**", result)
 
     def influence_line(self):
         if 'neutral' in self.card['faction_code']:
