@@ -2,7 +2,7 @@ import re
 
 from discord import Embed
 
-from beanstalk.cached import FACTION_COLORS, FACTION_NAMES, PACK_NAMES, mwl, CYCLE_ROTATIONS
+from beanstalk.cached import FACTION_COLORS, FACTION_NAMES, PACKS, mwl, CYCLE_ROTATIONS
 
 
 IMAGE_TEMPLATE = 'https://netrunnerdb.com/card_image/{code}.png'
@@ -109,8 +109,11 @@ class CardText(CardEmbed):
             self.illustrator if self.has('illustrator') else 'No Illustrator',
         ]
 
+        pack = PACKS[self.pack_code]
+        rotated = CYCLE_ROTATIONS[pack['cycle_code']]
+
         parts.append('{} {}'.format(
-            PACK_NAMES[self.pack_code] + (' (rotated)' if CYCLE_ROTATIONS[self.pack_code] else ''),
+            pack['name'] + (' (rotated)' if rotated else ''),
             self.position
         ))
 
