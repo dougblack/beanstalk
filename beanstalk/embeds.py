@@ -112,19 +112,20 @@ class TextEmbed(NREmbed):
         ]
 
         if self.card['code'] in mwl:
-            value = mwl[self.card['code']]
-            effect = list(value[1])[0]
-            if effect in ('global_penalty', 'universal_faction_cost'):
+            mwl_name, mwl_effects = mwl[self.card['code']]
+            mwl_abbrev = mwl_name['name'][-7:]
+            mwl_effect = list(mwl_effects)[0]
+            if mwl_effect in ('global_penalty', 'universal_faction_cost'):
                 parts += '{} Universal Influence ({})'.format(
-                    value[effect], value['name'][-7:]
+                    mwl_effects[mwl_effect], mwl_abbrev,
                 )
-            elif effect == 'is_restricted':
+            elif mwl_effect == 'is_restricted':
                 parts += 'Restricted ({})'.format(
-                    value['name'][-7:]
+                    mwl_abbrev,
                 )
-            elif effect == 'deck_limit':
+            elif mwl_effect == 'deck_limit' and mwl_effects[mwl_effect] == 0:
                 parts += 'Banned ({})'.format(
-                    value['name'][-7:]
+                    mwl_abbrev,
                 )
 
 
