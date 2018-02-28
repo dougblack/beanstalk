@@ -2,7 +2,7 @@ import re
 
 from discord import Embed
 
-from beanstalk.cached import FACTION_COLORS, FACTION_NAMES, PACK_NAMES
+from beanstalk.cached import FACTION_COLORS, FACTION_NAMES, PACK_NAMES, mwl
 
 
 IMAGE_TEMPLATE = 'https://netrunnerdb.com/card_image/{code}.png'
