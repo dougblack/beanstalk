@@ -113,7 +113,7 @@ class TextEmbed(NREmbed):
 
         if self.card['code'] in mwl:
             value = mwl[self.card['code']]
-            effect = value[1].keys()[0]
+            effect = list(value[1])[0]
             if effect in ('global_penalty', 'universal_faction_cost'):
                 parts += '{} Universal Influence ({})'.format(
                     value[effect], value['name'][-7:]
