@@ -35,17 +35,21 @@ class CardEmbed(object):
         return name in self.card
 
 
-class CardImage(NREmbed):
+class CardImage(CardEmbed):
     def render(self):
         self.embed.set_image(url=self.image(self.card))
         return self.embed
 
 
-class CardText(NREmbed):
+class CardText(CardEmbed):
     def type_line(self):
         result = '{}'.format(self.card['type_code']).title()
         if self.has('keywords'):
             result += ': {}'.format(self.card['keywords'])
+
+        type_code = self.type_code
+        if type_code == 'program' and 'strength' not in self.card:
+            type_code = 'weak_program'
 
         lines = {
             'identity': ['Deck: {minimum_deck_size}', 'Influence: {influence_limit}'],
@@ -56,6 +60,7 @@ class CardText(NREmbed):
             'operation': ['Cost: {cost}', 'Influence: {faction_cost}'],
             'event': ['Cost: {cost}', 'Influence: {faction_cost}'],
             'program': ['Install: {cost}', 'μ: {memory_cost}', 'Strength {strength}', 'Influence: {faction_cost}'],
+            'weak_program': ['Install: {cost}', 'μ: {memory_cost}', 'Influence: {faction_cost}'],
             'resource': ['Install: {cost}', 'Influence: {faction_cost}'],
             'hardware': ['Install: {cost}', 'Influence: {faction_cost}'],
         }
