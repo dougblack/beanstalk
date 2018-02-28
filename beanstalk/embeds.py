@@ -41,9 +41,9 @@ class CardImage(CardEmbed):
 
 class CardText(CardEmbed):
     def type_line(self):
-        result = '{}'.format(self.card['type_code']).title()
+        parts = [self.card['type_code'].title()]
         if self.has('keywords'):
-            result += ': {}'.format(self.card['keywords'])
+            parts.append(': {}'.format(self.card['keywords']))
 
         type_code = self.type_code
         if type_code == 'program' and 'strength' not in self.card:
@@ -63,8 +63,8 @@ class CardText(CardEmbed):
             'hardware': ['Install: {cost}', 'Influence: {faction_cost}'],
         }
 
-        result += ' • '.join(s.format(**self.card) for s in lines[self.type_code])
-        return result
+        parts.extend((' • ' + s).format(**self.card) for s in lines[self.type_code])
+        return ''.join(parts)
 
     def transform_trace(self, re_obj):
         ss_conv = {
