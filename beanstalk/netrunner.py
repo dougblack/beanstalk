@@ -17,7 +17,7 @@ class NRDBResource(object):
         return requests.get(uri, params=params).json()
 
     def fetch(self, key, **params):
-        # Hack. Chop off last character to make instace uri.
+        # Hack. Chop off last character to make instance uri.
         instance_location = self.location[:-1]
         uri = BASE_URI + instance_location + '/{}'.format(key)
         print('Fetching {}'.format(uri))
