@@ -113,9 +113,9 @@ class TextEmbed(NREmbed):
 
         if self.card['code'] in mwl:
             value = mwl[self.card['code']]
-            effect = value.keys()[0]
+            effect = value[1].keys()[0]
             if effect in ('global_penalty', 'universal_faction_cost'):
-                parts += '{} Global Influence ({})'.format(
+                parts += '{} Universal Influence ({})'.format(
                     value[effect], value['name'][-7:]
                 )
             elif effect == 'is_restricted':
