@@ -10,12 +10,12 @@ CARD_VIEW_TEMPLATE = 'https://netrunnerdb.com/en/card/{code}'
 
 class CardEmbed(object):
     def __init__(self, card):
+        self.card = card
         self.embed = Embed(
             type='rich',
             title=card['title'],
             url=self.url(card),
         )
-        self.card = card
 
     def image(self, card):
         return card.get(
