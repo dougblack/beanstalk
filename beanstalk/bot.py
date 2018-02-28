@@ -10,7 +10,7 @@ from beanstalk.embeds import CardImage, CardText
 from beanstalk.cached import CARDS
 
 TOKEN = os.environ.get('BEANSTALK_TOKEN')
-CARD_PATTERN = re.compile('.*\[\[(.*)\]\].*')
+CARD_PATTERN = re.compile('\[\[([^\]]*)\]\]')
 
 bot = commands.Bot(command_prefix='!', description='Netrunner bot')
 
@@ -31,22 +31,19 @@ async def on_ready():
 
 @bot.event
 async def on_message(message):
-    matches = CARD_PATTERN.match(message.content)
-    if not matches:
-        return
-    match = matches.group(1)
+    matches = re.findall(pattern, message.content)
+    for match in matches:
+        embed, match = choose_embed(match)
 
-    embed, match = choose_embed(match)
+        try:
+            target = process.extract(match, CARDS.keys(), limit=1)[0][0]
+            card = CARDS[target]
+        except Exception:
+            await bot.send_message(message.channel, 'Unknown card')
+            return
 
-    try:
-        target = process.extract(match, CARDS.keys(), limit=1)[0][0]
-        card = CARDS[target]
-    except Exception:
-        await bot.send_message(message.channel, 'Unknown card')
-        return
-
-    embed = embed(card)
-    await bot.send_message(message.channel, embed=embed.render())
+        embed = embed(card)
+        await bot.send_message(message.channel, embed=embed.render())
 
 
 if __name__ == '__main__':
