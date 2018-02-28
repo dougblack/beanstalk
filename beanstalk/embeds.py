@@ -63,7 +63,7 @@ class CardText(CardEmbed):
             'hardware': ['Install: {cost}', 'Influence: {faction_cost}'],
         }
 
-        parts.extend((' • ' + s).format(**self.card) for s in lines[self.type_code])
+        parts.extend((' • ' + s).format(**self.card) for s in lines[type_code])
         return ''.join(parts)
 
     def transform_trace(self, re_obj):
