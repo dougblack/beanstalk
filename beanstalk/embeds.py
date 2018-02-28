@@ -90,6 +90,10 @@ class TextEmbed(NREmbed):
         result = re.sub("(\[mu\])", "μ", result)
         result = re.sub("(<trace>Trace )(\d)(</trace>)", self.transform_trace, result, flags=re.I)
         result = re.sub("(<strong>)(.*?)(</strong>)", "**\g<2>**", result)
+
+        if self.card['type_code'] == 'ice':
+            result = '**Strength: {}**\n'.format(self.card['strength']) + result
+
         return result
 
     def influence_line(self):
