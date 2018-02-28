@@ -31,7 +31,7 @@ async def on_ready():
 
 @bot.event
 async def on_message(message):
-    matches = re.findall(pattern, message.content)
+    matches = re.findall(CARD_PATTERN, message.content)
     for match in matches:
         embed, match = choose_embed(match)
 
