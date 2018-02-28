@@ -38,24 +38,30 @@ class TextEmbed(NREmbed):
         result = '{}'.format(self.card['type_code']).title()
         if 'keywords' in self.card:
             result += ': {}'.format(self.card['keywords'])
-        cost_string = {
-            'asset': 'Rez',
-            'ice': 'Rez',
-            'upgrade': 'Rez',
-            'operation': 'Cost',
-            'event': 'Cost',
-            'program': 'Install',
-            'resource': 'Install',
-            'hardware': 'Install',
-        }
-        if 'cost' in self.card:
-            result += ' • {}: {}'.format(cost_string[self.card['type_code']], self.card['cost'])
-        elif 'advancement_cost' in self.card:
-            result += ' • Advance: {}'.format(self.card['advancement_cost'])
-        if 'trash_cost' in self.card:
-            result += ' • Trash: {}'.format(self.card['trash_cost'])
-        if 'faction_cost' in self.card:
-            result += ' • Influence: {}'.format(self.card['faction_cost'])
+
+        if self.card['type_code'] == 'identity':
+            result += ' • Deck: {}'.format(self.card['minimum_deck_size'])
+            result += ' • Influence: {}'.format(self.card['influence_limit'])
+        elif self.card['type_code'] == 'agenda':
+            result += ' • Adv: {}'.format(self.card['advancement_cost'])
+            result += ' • Score: {}'.format(self.card['agenda_points'])
+        else:
+            cost_string = {
+                'asset': 'Rez',
+                'ice': 'Rez',
+                'upgrade': 'Rez',
+                'operation': 'Cost',
+                'event': 'Cost',
+                'program': 'Install',
+                'resource': 'Install',
+                'hardware': 'Install',
+            }
+            if 'cost' in self.card:
+                result += ' • {}: {}'.format(cost_string[self.card['type_code']], self.card['cost'])
+            if 'trash_cost' in self.card:
+                result += ' • Trash: {}'.format(self.card['trash_cost'])
+            if 'faction_cost' in self.card:
+                result += ' • Influence: {}'.format(self.card['faction_cost'])
         return result
 
     def transform_trace(self, re_obj):
