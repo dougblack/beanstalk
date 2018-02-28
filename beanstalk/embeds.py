@@ -103,12 +103,32 @@ class TextEmbed(NREmbed):
             result += ' ' + ('•' * self.card['faction_cost'])
         return result
 
+
     def footer_line(self):
-        footer = ' • '.join([
+        parts = [
             FACTION_NAMES[self.card['faction_code']],
             self.card['illustrator'] if 'illustrator' in self.card else 'No Illustrator',
             PACK_NAMES[self.card['pack_code']] + ' ' + str(self.card['position']),
-        ])
+        ]
+
+        if self.card['code'] in mwl:
+            value = mwl[card_code]
+            effect = value.keys()[0]
+            if effect in ('global_penalty', 'universal_faction_cost'):
+                parts += '{} Global Influence ({})'.format(
+                    value[effect], value['name'][-7:]
+                )
+            elif effect == 'is_restricted':
+                parts += 'Restricted ({})'.format(
+                    value['name'][-7:]
+                )
+            elif effect == 'deck_limit':
+                parts += 'Banned ({})'.format(
+                    value['name'][-7:]
+                )
+
+
+        footer = ' • '.join(parts)
         return footer
 
     def render(self):

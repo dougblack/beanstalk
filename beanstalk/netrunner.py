@@ -32,3 +32,6 @@ class Factions(NRDBResource):
 
 class Packs(NRDBResource):
     location = '/packs'
+
+class MWLs(NRDBResource):
+    location = '/mwl'
