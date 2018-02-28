@@ -5,8 +5,6 @@ Beanstalk is a Discord bot for Android: Netrunner.
 ### Screenshots
 
 ![Heimdall](/assets/heimdall.png)
-![Professor](/assets/professor.png)
-![Snare](/assets/snare.png)
 
 ### Installation
 
