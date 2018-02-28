@@ -8,63 +8,59 @@ from beanstalk.cached import FACTION_COLORS, FACTION_NAMES, PACK_NAMES, mwl, CYC
 IMAGE_TEMPLATE = 'https://netrunnerdb.com/card_image/{code}.png'
 CARD_VIEW_TEMPLATE = 'https://netrunnerdb.com/en/card/{code}'
 
-class NREmbed(object):
+class CardEmbed(object):
     def __init__(self, card):
-        self.card = card
         self.embed = Embed(
             type='rich',
-            title=self.card['title'],
+            title=card['title'],
             url=self.url(card),
         )
+        self.card = card
 
     def image(self, card):
         return card.get(
             'image_url',
-            IMAGE_TEMPLATE.format(code=self.card['code'])
+            IMAGE_TEMPLATE.format(code=self.code)
         )
 
     def url(self, card):
-        return CARD_VIEW_TEMPLATE.format(code=self.card['code'])
+        return CARD_VIEW_TEMPLATE.format(code=self.code)
+
+    def __getattr__(self, attr):
+        if attr in self.card:
+            return self.card[attr]
+        raise AttributeError
+
+    def has(self, name):
+        return name in self.card
 
 
-class ImageEmbed(NREmbed):
+class CardImage(NREmbed):
     def render(self):
         self.embed.set_image(url=self.image(self.card))
         return self.embed
 
 
-class TextEmbed(NREmbed):
+class CardText(NREmbed):
     def type_line(self):
         result = '{}'.format(self.card['type_code']).title()
-        if 'keywords' in self.card:
+        if self.has('keywords'):
             result += ': {}'.format(self.card['keywords'])
 
-        if self.card['type_code'] == 'identity':
-            result += ' • Deck: {}'.format(self.card['minimum_deck_size'])
-            result += ' • Influence: {}'.format(self.card['influence_limit'])
-        elif self.card['type_code'] == 'agenda':
-            result += ' • Adv: {}'.format(self.card['advancement_cost'])
-            result += ' • Score: {}'.format(self.card['agenda_points'])
-        elif self.card['type_code'] == 'ice':
-            result += ' • Rez: {}'.format(self.card['cost'])
-            result += ' • Strength: {}'.format(self.card['strength'])
-            result += ' • Influence: {}'.format(self.card['faction_cost'])
-        else:
-            cost_string = {
-                'asset': 'Rez',
-                'upgrade': 'Rez',
-                'operation': 'Cost',
-                'event': 'Cost',
-                'program': 'Install',
-                'resource': 'Install',
-                'hardware': 'Install',
-            }
-            if 'cost' in self.card:
-                result += ' • {}: {}'.format(cost_string[self.card['type_code']], self.card['cost'])
-            if 'trash_cost' in self.card:
-                result += ' • Trash: {}'.format(self.card['trash_cost'])
-            if 'faction_cost' in self.card:
-                result += ' • Influence: {}'.format(self.card['faction_cost'])
+        lines = {
+            'identity': ['Deck: {minimum_deck_size}', 'Influence: {influence_limit}'],
+            'agenda': ['Adv: {advancement_cost}', 'Score: {agenda_points}'],
+            'ice': ['Rez: {cost}', 'Strength: {strength}', 'Influence: {faction_cost}'],
+            'asset': ['Rez: {cost}', 'Trash: {trash_cost}', 'Influence: {faction_cost}'],
+            'upgrade': ['Rez: {cost}', 'Trash: {trash_cost}', 'Influence: {faction_cost}'],
+            'operation': ['Cost: {cost}', 'Influence: {faction_cost}'],
+            'event': ['Cost: {cost}', 'Influence: {faction_cost}'],
+            'program': ['Install: {cost}', 'μ: {memory_cost}', 'Strength {strength}', 'Influence: {faction_cost}'],
+            'resource': ['Install: {cost}', 'Influence: {faction_cost}'],
+            'hardware': ['Install: {cost}', 'Influence: {faction_cost}'],
+        }
+
+        result += ' • '.join(s.format(**self.card) for s in lines[self.type_code])
         return result
 
     def transform_trace(self, re_obj):
@@ -85,7 +81,7 @@ class TextEmbed(NREmbed):
         return ret_string
 
     def text_line(self):
-        result = re.sub("(\[click\])", "🕖", self.card['text'])
+        result = re.sub("(\[click\])", "🕖", self.text)
         result = re.sub("(\[recurring-credit\])", "💰⮐", result)
         result = re.sub("(\[credit\])", "💰", result)
         result = re.sub("(\[subroutine\])", "↳", result)
@@ -95,28 +91,28 @@ class TextEmbed(NREmbed):
         return re.sub("(<strong>)(.*?)(</strong>)", "**\g<2>**", result)
 
     def influence_line(self):
-        if 'neutral' in self.card['faction_code']:
+        if self.has('neutral'):
             return ''
 
-        result = '\n' + FACTION_NAMES[self.card['faction_code']]
-        if 'faction_cost' in self.card:
-            result += ' ' + ('•' * self.card['faction_cost'])
+        result = '\n' + FACTION_NAMES[self.faction_code]
+        if self.has('faction_cost'):
+            result += ' ' + ('•' * self.faction_cost)
         return result
 
 
     def footer_line(self):
         parts = [
-            FACTION_NAMES[self.card['faction_code']],
-            self.card['illustrator'] if 'illustrator' in self.card else 'No Illustrator',
+            FACTION_NAMES[self.faction_code],
+            self.illustrator if self.has('illustrator') else 'No Illustrator',
         ]
 
         parts.append('{} {}'.format(
-            PACK_NAMES[self.card['pack_code']] + (' (rotated)' if CYCLE_ROTATIONS[self.card['pack_code']] else ''),
-            self.card['position']
+            PACK_NAMES[self.pack_code] + (' (rotated)' if CYCLE_ROTATIONS[self.pack_code] else ''),
+            self.position
         ))
 
-        if self.card['code'] in mwl:
-            mwl_name, mwl_effects = mwl[self.card['code']]
+        if self.code in mwl:
+            mwl_name, mwl_effects = mwl[self.code]
             mwl_abbrev = mwl_name[-7:]
             mwl_effect = list(mwl_effects)[0]
             if mwl_effect in ('global_penalty', 'universal_faction_cost'):
@@ -140,7 +136,7 @@ class TextEmbed(NREmbed):
             name=self.type_line(),
             value=self.text_line(),
         )
-        self.embed.colour =  FACTION_COLORS[self.card['faction_code']]
+        self.embed.colour =  FACTION_COLORS[self.faction_code]
         self.embed.set_thumbnail(url=self.image(self.card))
         self.embed.set_footer(text=self.footer_line())
         return self.embed

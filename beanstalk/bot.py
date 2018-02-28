@@ -6,7 +6,7 @@ from fuzzywuzzy import process
 from discord.ext import commands
 from discord import Embed
 
-from beanstalk.embeds import ImageEmbed, TextEmbed
+from beanstalk.embeds import CardImage, CardText
 from beanstalk.cached import CARDS
 
 TOKEN = os.environ.get('BEANSTALK_TOKEN')
@@ -17,10 +17,10 @@ bot = commands.Bot(command_prefix='!', description='Netrunner bot')
 
 def choose_embed(match):
     if match.startswith('!'):
-        embed = ImageEmbed
+        embed = CardImage
         match = match[1:]
     else:
-        embed = TextEmbed
+        embed = CardText
     return embed, match
 
 
