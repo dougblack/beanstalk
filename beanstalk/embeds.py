@@ -110,11 +110,10 @@ class TextEmbed(NREmbed):
             self.card['illustrator'] if 'illustrator' in self.card else 'No Illustrator',
         ]
 
-        if CYCLE_ROTATIONS[self.card['pack_code']]:
-            parts.append('{} {}'.format(
-                PACK_NAMES[self.card['pack_code']] + ' (rotated)' if CYCLE_ROTATIONS[self.card['pack_code']] else '',
-                self.card['position']
-            ))
+        parts.append('{} {}'.format(
+            PACK_NAMES[self.card['pack_code']] + ' (rotated)' if CYCLE_ROTATIONS[self.card['pack_code']] else '',
+            self.card['position']
+        ))
 
         if self.card['code'] in mwl:
             mwl_name, mwl_effects = mwl[self.card['code']]
