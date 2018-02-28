@@ -2,7 +2,7 @@ import re
 
 from discord import Embed
 
-from beanstalk.cached import FACTION_COLORS, FACTION_NAMES, PACK_NAMES, mwl
+from beanstalk.cached import FACTION_COLORS, FACTION_NAMES, PACK_NAMES, mwl, CYCLE_ROTATIONS
 
 
 IMAGE_TEMPLATE = 'https://netrunnerdb.com/card_image/{code}.png'
@@ -108,8 +108,13 @@ class TextEmbed(NREmbed):
         parts = [
             FACTION_NAMES[self.card['faction_code']],
             self.card['illustrator'] if 'illustrator' in self.card else 'No Illustrator',
-            PACK_NAMES[self.card['pack_code']] + ' ' + str(self.card['position']),
         ]
+
+        if CYCLE_ROTATIONS[self.card['pack_code']]:
+            parts.append('{} {}'.format(
+                PACK_NAMES[self.card['pack_code']] + ' (rotated)' if CYCLE_ROTATIONS[self.card['pack_code']] else '',
+                self.card['position']
+            ))
 
         if self.card['code'] in mwl:
             mwl_name, mwl_effects = mwl[self.card['code']]
@@ -127,7 +132,6 @@ class TextEmbed(NREmbed):
                 parts.append('Banned ({})'.format(
                     mwl_abbrev,
                 ))
-
 
         footer = ' • '.join(parts)
         return footer

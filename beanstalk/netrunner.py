@@ -35,3 +35,6 @@ class Packs(NRDBResource):
 
 class MWLs(NRDBResource):
     location = '/mwl'
+
+class Cycles(NRDBResource):
+    location = '/cycles'
