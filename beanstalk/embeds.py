@@ -46,7 +46,7 @@ class TextEmbed(NREmbed):
             result += ' • Adv: {}'.format(self.card['advancement_cost'])
             result += ' • Score: {}'.format(self.card['agenda_points'])
         elif self.card['type_code'] == 'ice':
-            result += ' • Rez: {}'.format(self.card['advancement_cost'])
+            result += ' • Rez: {}'.format(self.card['cost'])
             result += ' • Strength: {}'.format(self.card['strength'])
             result += ' • Influence: {}'.format(self.card['faction_cost'])
         else:
