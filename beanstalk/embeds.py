@@ -27,9 +27,7 @@ class CardEmbed(object):
         return CARD_VIEW_TEMPLATE.format(code=self.code)
 
     def __getattr__(self, attr):
-        if attr in self.card:
-            return self.card[attr]
-        raise AttributeError
+        return self.card[attr]
 
     def has(self, name):
         return name in self.card
