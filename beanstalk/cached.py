@@ -12,6 +12,6 @@ PACK_NAMES = {p['code']: p['name'] for p in pack_resp}
 
 mwl = {}
 
-for mwl in mwl_resp:
-    for card_code, value in mwl['cards'].items():
-        mwl[card_code] = (mwl['name'], value)
+for mwl_item in mwl_resp:
+    for card_code, value in mwl_item['cards'].items():
+        mwl[card_code] = (mwl_item['name'], value)
