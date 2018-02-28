@@ -84,12 +84,15 @@ class CardText(CardEmbed):
         return ret_string
 
     def text_line(self):
-        result = re.sub("(\[click\])", "🕖", self.text)
-        result = re.sub("(\[recurring-credit\])", "💰⮐", result)
-        result = re.sub("(\[credit\])", "💰", result)
-        result = re.sub("(\[subroutine\])", "↳", result)
-        result = re.sub("(\[trash\])", "🗑", result)
-        result = re.sub("(\[mu\])", "μ", result)
+        result = re.sub("(\[click\])", ":nrclick:", self.text)
+        result = re.sub("(\[recurring-credit\])", ":nrrecurringcredit:", result)
+        result = re.sub("(\[credit\])", ":nrcredit:", result)
+        result = re.sub("(\[subroutine\])", ":nrsubroutine:", result)
+        result = re.sub("(\[trash\])", ":nrtrash:", result)
+        result = re.sub("(0\[mu\])", ":nrmu0:", result)
+        result = re.sub("(1\[mu\])", ":nrmu1:", result)
+        result = re.sub("(2\[mu\])", ":nrmu2:", result)
+        result = re.sub("(3\[mu\])", ":nrmu3:", result)
         result = re.sub("(<trace>Trace )(\d)(</trace>)", self.transform_trace, result, flags=re.I)
         return re.sub("(<strong>)(.*?)(</strong>)", "**\g<2>**", result)
 
