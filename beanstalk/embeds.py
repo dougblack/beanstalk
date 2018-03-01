@@ -150,14 +150,11 @@ class CardText(CardEmbed):
         This transforms the text line to have all the fancy emojis in
         SUBSTITUTIONS, bolded text, and trace superscripts.
         """
-        result = self.text if self.has('text') else ''
+        result = self.text if self.has('text') else '(no text)'
         for target, sub in self.SUBSTITUTIONS.items():
             result = re.sub(target, sub, result)
         result = re.sub("(<trace>Trace )(\d)(</trace>)", self.transform_trace, result, flags=re.I)
-        result = re.sub("(<strong>)(.*?)(</strong>)", "**\g<2>**", result)
-        if not result:
-            result = 'No card text'
-        return result
+        return re.sub("(<strong>)(.*?)(</strong>)", "**\g<2>**", result)
 
     def footer_line(self):
         """
