@@ -53,6 +53,8 @@ async def on_message(message):
         embed = embed(card)
         await bot.send_message(message.channel, embed=embed.render())
 
+    await bot.process_commands()
+
 @bot.group(pass_context=True)
 async def beanstalk(ctx):
     pass
@@ -73,9 +75,9 @@ async def refresh(*_):
     if not last_refresh or time.time() - last_refresh > 300:
         cached.refresh()
         last_refresh = time.time()
-        await bot.send_message(message.channel, 'Refreshed cache.')
+        await bot.say('Refreshed cache.')
     else:
-        await bot.send_message(message.channel, 'Last refresh was only {} seconds ago. Skipping.'.format(
+        await bot.say('Last refresh was only {} seconds ago. Skipping.'.format(
             time.time() - last_refresh
         ))
 
