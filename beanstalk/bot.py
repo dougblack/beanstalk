@@ -36,6 +36,9 @@ async def on_ready():
 
 @bot.event
 async def on_message(message):
+    if message.author.id == bot.user.id:
+        pass
+
     matches = set(re.findall(CARD_PATTERN, message.content))
     for match in matches:
         embed, match = choose_embed(match)
@@ -50,9 +53,23 @@ async def on_message(message):
         embed = embed(card)
         await bot.send_message(message.channel, embed=embed.render())
 
+@bot.group(pass_context=True)
+async def beanstalk(ctx):
+    pass
 
-@bot.command()
-async def refresh():
+
+@beanstalk.command()
+async def help(*_):
+    await bot.say(
+        '```Usage: \n' \
+        '[[card]] - Fetch card embed.\n' \
+        '[[!card]] - Fetch card image.\n' \
+        '!beanstalk refresh - Refresh card cache.```'
+    )
+
+
+@beanstalk.command()
+async def refresh(*_):
     if not last_refresh or time.time() - last_refresh > 300:
         cached.refresh()
         last_refresh = time.time()
