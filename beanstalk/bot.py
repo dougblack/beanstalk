@@ -37,7 +37,7 @@ async def on_ready():
 @bot.event
 async def on_message(message):
     if message.author.id == bot.user.id:
-        pass
+        return
 
     matches = set(re.findall(CARD_PATTERN, message.content))
     for match in matches:
@@ -72,6 +72,7 @@ async def help(*_):
 
 @beanstalk.command()
 async def refresh(*_):
+    global last_refresh
     if not last_refresh or time.time() - last_refresh > 300:
         cached.refresh()
         last_refresh = time.time()
