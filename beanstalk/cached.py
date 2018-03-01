@@ -1,4 +1,10 @@
-from beanstalk.netrunner import Cards, Factions, Packs, MWLs, Cycles
+from beanstalk.netrunner import (
+    Cards,
+    Factions,
+    Packs,
+    MWLs,
+    Cycles,
+)
 
 CARDS = None
 FACTION_COLORS = None
@@ -9,6 +15,9 @@ MWL = None
 
 
 def refresh():
+    """
+    Refresh the cache.
+    """
     global CARDS
     global FACTION_COLORS
     global FACTION_NAMES

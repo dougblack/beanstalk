@@ -13,50 +13,19 @@ from beanstalk import cached
 from beanstalk.cached import CARDS
 
 TOKEN = os.environ.get('BEANSTALK_TOKEN')
-CARD_PATTERN = re.compile('\[\[([^\]]*)\]\]')
+QUERY_PATTERN = re.compile('\[\[([^\]]*)\]\]')
 
 bot = commands.Bot(command_prefix='!', description='Netrunner bot')
 
 last_refresh = None
 
 
-def choose_embed(match):
-    if match.startswith('!'):
-        embed = CardImage
-        match = match[1:]
-    else:
-        embed = CardText
-    return embed, match
-
-
-@bot.event
-async def on_ready():
-    print('Logged in as {} with id {}.'.format(bot.user, bot.user.id))
-
-
-@bot.event
-async def on_message(message):
-    if message.author.id == bot.user.id:
-        return
-
-    matches = set(re.findall(CARD_PATTERN, message.content))
-    for match in matches:
-        embed, match = choose_embed(match)
-
-        try:
-            target = process.extract(match, CARDS.keys(), limit=1)[0][0]
-            card = CARDS[target]
-        except Exception:
-            await bot.send_message(message.channel, 'Unknown card')
-            return
-
-        embed = embed(card)
-        await bot.send_message(message.channel, embed=embed.render())
-
-    await bot.process_commands(message)
-
 @bot.group(pass_context=True)
 async def beanstalk(ctx):
+    """
+    Creates a command group. !beanstalk <command> is the usage pattern
+    for all beanstalk commands.
+    """
     pass
 
 
@@ -72,15 +41,79 @@ async def help(*_):
 
 @beanstalk.command()
 async def refresh(*_):
+    """
+    Refreshes the bots local cache of the card pool. Useful when
+    the card pool expands.
+
+    Must wait at least five minutes between cache refreshes.
+    """
     global last_refresh
-    if not last_refresh or time.time() - last_refresh > 300:
+    time_since = time.time() - last_refresh if last_refresh else None
+    if not time_since or time_since > 300:
         cached.refresh()
         last_refresh = time.time()
         await bot.say('Cache refreshed.')
     else:
-        await bot.say('Last refresh was only {} seconds ago. Skipping.'.format(
-            int(time.time() - last_refresh)
-        ))
+        await bot.say(f'Last refresh was only {time_since} seconds ago. Skipping.')
+
+
+
+@bot.event
+async def on_ready():
+    """
+    Called once the bot is ready to receive and respond to messages.
+    """
+    print(f'Logged in as {bot.user} with id {bot.user.id}.')
+
+
+@bot.event
+async def on_message(message):
+    """
+    Called on every message received by our bot.
+
+    First, we pull out all queries (text wrapped in double square brackets
+    `[[like this]]`) from the message.
+
+    For each found query, we fuzzy match over the entire card pool which is
+    locally cached in memory. If the highest scoring match has a score of 50 or
+    greater (out of a possible score of 100), we embed it in either an
+    `CardEmbed` or `ImageEmbed`, depending on if the original query was
+    prefixed with `!` or not.
+
+    After all this is done, we manually call `bot.process_commands` to give our
+    `!beanstalk help` and `!beanstalk refresh` commands a chance to fire, as
+    implementing `on_message` intercepts typical command processing.
+    """
+
+    # Ignore our own messages.
+    if message.author.id == bot.user.id:
+        return
+
+    queries = set(re.findall(QUERY_PATTERN, message.content))
+    for query in queries:
+
+        # Choose the embed.
+        if query == '' or query == '!':
+            continue
+        elif query.startswith('!'):
+            embed = CardImage
+            query = query[1:]
+        else:
+            embed = CardText
+
+        # Fuzzy match over the card pool.
+        results = process.extract(query, CARDS.keys(), limit=1, scorer=fuzz.token_set_ratio)
+
+        # If high enough scoring match is found, build the embed.
+        response = f'No results for {query}'
+        if results:
+            card, score = results[0]
+            if score >= 50:
+                response = embed(card).render()
+        await bot.send_message(message.channel, response)
+
+    # Give other commands a chance to resolve.
+    await bot.process_commands(message)
 
 
 if __name__ == '__main__':
