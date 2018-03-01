@@ -2,7 +2,7 @@ import re
 
 from discord import Embed
 
-from beanstalk.cached import FACTION_COLORS, FACTION_NAMES, PACKS, mwl, CYCLE_ROTATIONS
+from beanstalk.cached import FACTION_COLORS, FACTION_NAMES, PACKS, MWL, CYCLE_ROTATIONS
 
 
 IMAGE_TEMPLATE = 'https://netrunnerdb.com/card_image/{code}.png'
@@ -127,8 +127,8 @@ class CardText(CardEmbed):
             self.position
         ))
 
-        if self.code in mwl:
-            mwl_name, mwl_effects = mwl[self.code]
+        if self.code in MWL:
+            mwl_name, mwl_effects = MWL[self.code]
             mwl_abbrev = mwl_name[-7:]
             mwl_effect = list(mwl_effects)[0]
             if mwl_effect in ('global_penalty', 'universal_faction_cost'):
