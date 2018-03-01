@@ -105,13 +105,14 @@ async def on_message(message):
         results = process.extract(query, CARDS.keys(), limit=1, scorer=fuzz.token_set_ratio)
 
         # If high enough scoring match is found, build the embed.
-        response = f'No results for {query}'
         if results:
             card_name, score = results[0]
             if score >= 50:
                 card = CARDS[card_name]
-                response = embed(card).render()
-        await bot.send_message(message.channel, response)
+                embed = embed(card)
+                await bot.send_message(message.channel, embed=embed.render())
+                continue
+        await bot.send_message(message.channel, f'No results for {query}')
 
     # Give other commands a chance to resolve.
     await bot.process_commands(message)
