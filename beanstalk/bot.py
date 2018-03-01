@@ -107,8 +107,9 @@ async def on_message(message):
         # If high enough scoring match is found, build the embed.
         response = f'No results for {query}'
         if results:
-            card, score = results[0]
+            card_name, score = results[0]
             if score >= 50:
+                card = CARDS[card_name]
                 response = embed(card).render()
         await bot.send_message(message.channel, response)
 
