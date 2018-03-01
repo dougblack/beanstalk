@@ -4,7 +4,7 @@ import re
 
 import time
 
-from fuzzywuzzy import process
+from fuzzywuzzy import process, fuzz
 from discord.ext import commands
 from discord import Embed
 
