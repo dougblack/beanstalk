@@ -51,7 +51,7 @@ async def on_message(message):
         await bot.send_message(message.channel, embed=embed.render())
 
 
-@bot.command
+@bot.command()
 async def refresh():
     if not last_refresh or time.time() - last_refresh > 300:
         cached.refresh()
