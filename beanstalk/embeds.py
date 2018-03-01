@@ -174,7 +174,7 @@ class CardText(CardEmbed):
         pack = PACKS[self.pack_code]
         rotated = CYCLE_ROTATIONS[pack['cycle_code']]
 
-        pack_text = pack['name'] + (' (rotated)' if rotated else ''),
+        pack_text = pack['name'] + (' (rotated)' if rotated else '')
         parts.append(f'{pack_text} {self.position}')
 
         if self.code in MWL:
