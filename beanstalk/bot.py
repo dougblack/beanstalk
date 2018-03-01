@@ -31,7 +31,7 @@ def choose_embed(match):
 
 @bot.event
 async def on_ready():
-    print('Logged as {} with id {}.'.format(bot.user, bot.user.id))
+    print('Logged in as {} with id {}.'.format(bot.user, bot.user.id))
 
 
 @bot.event
@@ -76,10 +76,10 @@ async def refresh(*_):
     if not last_refresh or time.time() - last_refresh > 300:
         cached.refresh()
         last_refresh = time.time()
-        await bot.say('Refreshed cache.')
+        await bot.say('Cache refreshed.')
     else:
         await bot.say('Last refresh was only {} seconds ago. Skipping.'.format(
-            time.time() - last_refresh
+            int(time.time() - last_refresh)
         ))
 
 
