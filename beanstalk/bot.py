@@ -53,7 +53,7 @@ async def on_message(message):
         embed = embed(card)
         await bot.send_message(message.channel, embed=embed.render())
 
-    await bot.process_commands()
+    await bot.process_commands(message)
 
 @bot.group(pass_context=True)
 async def beanstalk(ctx):
