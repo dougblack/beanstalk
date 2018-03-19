@@ -170,12 +170,10 @@ class CardText(CardEmbed):
         ]
 
         pack = PACKS[self.pack_code]
+
         rotated = CYCLE_ROTATIONS[pack['cycle_code']]
-
-        parts.append(pack['cycle_code'].title())
-
-        pack_text = pack['name'] + (' (rotated)' if rotated else '')
-        parts.append(f'{cycle_text} - {pack_text} {self.position}')
+        parts.append(pack['cycle_code'].title() + (' (rotated)' if rotated else ''))
+        parts.append(f'{pack["name"]} {self.position}')
 
         if self.code in MWL:
             mwl_name, mwl_effects = MWL[self.code]
