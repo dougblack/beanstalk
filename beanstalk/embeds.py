@@ -3,7 +3,7 @@ import re
 from discord import Embed
 
 from beanstalk.cached import (
-    CYCLE_ROTATIONS,
+    CYCLES,
     FACTION_COLORS,
     FACTION_NAMES,
     MWL,
@@ -170,10 +170,11 @@ class CardText(CardEmbed):
         ]
 
         pack = PACKS[self.pack_code]
+        cycle = CYCLES[pack['cycle_code']]
 
-        rotated = CYCLE_ROTATIONS[pack['cycle_code']]
-        parts.append(pack['cycle_code'].title() + (' (rotated)' if rotated else ''))
-        parts.append(f'{pack["name"]} {self.position}')
+        parts.append(pack['cycle_code'].title() + (' (rotated)' if cycle['rotated'] else ''))
+        if cycle['size'] > 1:
+            parts.append(f'{pack["name"]} {self.position}')
 
         if self.code in MWL:
             mwl_name, mwl_effects = MWL[self.code]

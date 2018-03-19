@@ -10,7 +10,7 @@ CARDS = None
 FACTION_COLORS = None
 FACTION_NAMES = None
 PACKS = None
-CYCLE_ROTATIONS = None
+CYCLES = None
 MWL = None
 
 
@@ -22,7 +22,7 @@ def refresh():
     global FACTION_COLORS
     global FACTION_NAMES
     global PACKS
-    global CYCLE_ROTATIONS
+    global CYCLES
     global MWL
 
     print('Refreshing cache')
@@ -37,7 +37,7 @@ def refresh():
     FACTION_COLORS = {f['code']: int(f['color'], 16) for f in faction_resp}
     FACTION_NAMES = {f['code']: f['name'] for f in faction_resp}
     PACKS = {p['code']: p for p in pack_resp}
-    CYCLE_ROTATIONS = {c['code']: c['rotated'] for c in cycle_resp}
+    CYCLES = {c['code']: c for c in cycle_resp}
     MWL = {}
 
     for mwl_item in mwl_resp:
