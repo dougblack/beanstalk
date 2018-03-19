@@ -176,7 +176,7 @@ class CardText(CardEmbed):
             parts.append(cycle['name'] + (' (rotated)' if cycle['rotated'] else ''))
             parts.append(f'{pack["name"]} {self.position}')
         else:
-            parts.append(cycle['name'] + (' (rotated)' if cycle['rotated'] else '') + ' ' + self.position)
+            parts.append(cycle['name'] + (' (rotated)' if cycle['rotated'] else '') + f' {self.position}')
 
         if self.code in MWL:
             mwl_name, mwl_effects = MWL[self.code]
