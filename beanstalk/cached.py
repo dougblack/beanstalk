@@ -40,8 +40,9 @@ def refresh():
     CYCLES = {c['code']: c for c in cycle_resp}
     MWL = {}
 
-    for card_code, value in mwl[-1]['cards'].items():
-        MWL[card_code] = (mwl[-1]['name'], value)
+    lastest_mwl = mwl_resp[-1]
+    for card_code, value in latest_mwl['cards'].items():
+        MWL[card_code] = (latest_mwl['name'], value)
 
     print('Cache rebuilt')
 
