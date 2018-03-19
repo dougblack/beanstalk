@@ -25,7 +25,7 @@ def refresh():
     global CYCLES
     global MWL
 
-    print('Refreshing cache')
+    print('Rebuilding cache...')
 
     faction_resp = Factions().all()['data']
     card_resp = Cards().all()['data']
@@ -40,10 +40,9 @@ def refresh():
     CYCLES = {c['code']: c for c in cycle_resp}
     MWL = {}
 
-    for mwl_item in mwl_resp:
-        for card_code, value in mwl_item['cards'].items():
-            MWL[card_code] = (mwl_item['name'], value)
+    for card_code, value in mwl[-1]['cards'].items():
+        MWL[card_code] = (mwl[-1]['name'], value)
 
-    print('Cache refreshed')
+    print('Cache rebuilt')
 
 refresh()
