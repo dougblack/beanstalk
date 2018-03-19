@@ -1,6 +1,7 @@
 # Beanstalk
 
-Beanstalk is a Discord bot for Android: Netrunner.
+Beanstalk is a Discord bot for Android: Netrunner. I wrote a little about it
+[here][blog].
 
 ### Screenshots
 
@@ -19,3 +20,5 @@ make install
 ```
 BEANSTALK_TOKEN=<bot_token> python beanstalk/bot.py
 ```
+
+[blog]: https://dougblack.io/words/introducing-beanstalk.html
