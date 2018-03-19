@@ -110,7 +110,7 @@ async def on_message(message):
             if score >= 50:
                 card = CARDS[card_name]
                 embed = embed(card)
-                print(f'Query `{query}` satisifed with `{card_name}` at score `{score}` in channel `{message.channel}`')
+                print(f'Query `{query}` satisifed with `{card_name}` at score `{score}` in channel `{message.channel.id}`')
                 await bot.send_message(message.channel, embed=embed.render())
                 continue
         await bot.send_message(message.channel, f'No results for {query}')
