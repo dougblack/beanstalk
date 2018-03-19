@@ -158,9 +158,8 @@ class CardText(CardEmbed):
 
     def footer_line(self):
         """
-        This constructs the footer which contains faction membership, card
-        illustrator, cycle membership and position, cycle rotations, and
-        the latest MWL entry.
+        This constructs the footer which contains faction membership, cycle
+        membership and position, cycle rotations, and the latest MWL entry.
 
         Example:
 
@@ -168,14 +167,14 @@ class CardText(CardEmbed):
         """
         parts = [
             FACTION_NAMES[self.faction_code],
-            self.illustrator if self.has('illustrator') else 'No Illustrator',
         ]
 
         pack = PACKS[self.pack_code]
         rotated = CYCLE_ROTATIONS[pack['cycle_code']]
 
+        parts.append(pack['cycle_code'].title())
+
         pack_text = pack['name'] + (' (rotated)' if rotated else '')
-        cycle_text = pack['cycle_code'].title()
         parts.append(f'{cycle_text} - {pack_text} {self.position}')
 
         if self.code in MWL:
