@@ -40,7 +40,7 @@ def refresh():
     CYCLES = {c['code']: c for c in cycle_resp}
     MWL = {}
 
-    lastest_mwl = mwl_resp[-1]
+    latest_mwl = mwl_resp[-1]
     for card_code, value in latest_mwl['cards'].items():
         MWL[card_code] = (latest_mwl['name'], value)
 
