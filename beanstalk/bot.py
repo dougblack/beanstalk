@@ -101,6 +101,15 @@ async def on_message(message):
         else:
             embed = CardText
 
+        # Check for exact match. Fuzzy searcher sometimes misses these.
+        exact_match = CARDS.get(query)
+        if exact_match:
+            card = exact_match
+            embed = embed(card)
+            print(f'Query `{query}` satisfied with `{card_name}` with exact match in channel `{message.channel.id}`')
+            await bot.send_message(message.channel, embed=embed.render())
+            continue
+
         # Fuzzy match over the card pool.
         results = process.extract(query, CARDS.keys(), limit=1, scorer=fuzz.token_set_ratio)
 
