@@ -87,7 +87,7 @@ def fuzzy_match(query, cards):
 
     The fuzzy searching library we use--`fuzzywuzzy`--scores its matches from 1
     to 100. Empirically, matches with scores less than 50 rarely look anything
-    like the given query so, we always use the top match and discard it if its
+    like the given query. So, we always use the top match and discard it if its
     score is less than 50 to prevent seemingly random responses from Beanstalk.
     """
     # Fuzzy match over the card pool.
