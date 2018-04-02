@@ -141,7 +141,7 @@ async def on_message(message):
             embed = CardText
 
         if not CARDS:
-            await bot.send_message(message.channel, f'No cards loaded. https://netrunnerdb.com might be down.')
+            await bot.send_message(message.channel, f'My card pool is empty. https://netrunnerdb.com might be down.')
 
         for search in (exact_match, fuzzy_match):
             match = search(query, CARDS)
