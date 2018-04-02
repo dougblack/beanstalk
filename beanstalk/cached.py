@@ -27,11 +27,15 @@ def refresh():
 
     print('Rebuilding cache...')
 
-    faction_resp = Factions().all()['data']
-    card_resp = Cards().all()['data']
-    pack_resp = Packs().all()['data']
-    mwl_resp = MWLs().all()['data']
-    cycle_resp = Cycles().all()['data']
+    try:
+        faction_resp = Factions().all()['data']
+        card_resp = Cards().all()['data']
+        pack_resp = Packs().all()['data']
+        mwl_resp = MWLs().all()['data']
+        cycle_resp = Cycles().all()['data']
+    except Exception:
+        print('NetrunnerDB requests failed. Aborting cache refresh.')
+        return
 
     CARDS = {c['title']: c for c in card_resp}
     FACTION_COLORS = {f['code']: int(f['color'], 16) for f in faction_resp}
