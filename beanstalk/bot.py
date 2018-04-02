@@ -32,9 +32,9 @@ async def beanstalk(ctx):
 @beanstalk.command()
 async def help(*_):
     await bot.say(
-        '```Usage: \n' \
-        '[[card]] - Fetch card embed.\n' \
-        '[[!card]] - Fetch card image.\n' \
+        '```Usage: \n'
+        '[[card]] - Fetch card embed.\n'
+        '[[!card]] - Fetch card image.\n'
         '!beanstalk refresh - Refresh card cache.```'
     )
 
@@ -57,13 +57,52 @@ async def refresh(*_):
         await bot.say(f'Last refresh was only {time_since} seconds ago. Skipping.')
 
 
-
 @bot.event
 async def on_ready():
     """
     Called once the bot is ready to receive and respond to messages.
     """
     print(f'Logged in as {bot.user} with id {bot.user.id}.')
+
+
+def exact_match(query, cards):
+    """
+    Returns an embed if the query exactly matches a card name in the card set.
+
+    We do this because the fuzzy searcher sometimes mis-scores these exact matches
+    and hands back the wrong cards. This ensures that every card is fetchable via
+    Beanstalk by using its exact name.
+    """
+    exact_match = CARDS.get(query)
+    if not exact_match:
+        return None
+    embed = embed(exact_match)
+    print(f'Query `{query}` satisfied with exact match in channel `{message.channel.id}`')
+    return embed
+
+
+def fuzzy_match(query, cards):
+    """
+    Returns an embed if the query fuzzily matches a card name in the card set.
+
+    The fuzzy searching library we use--`fuzzywuzzy`--scores its matches from 1
+    to 100. Empirically, matches with scores less than 50 rarely look anything
+    like the given query so, we always use the top match and discard it if its
+    score is less than 50 to prevent seemingly random responses from Beanstalk.
+    """
+    # Fuzzy match over the card pool.
+    results = process.extract(query, CARDS.keys(), limit=1, scorer=fuzz.token_set_ratio)
+    if not results:
+        return None
+    # If score is less than 50, ignore this result. Beanstalk will return no
+    # embed in this case.
+    card_name, score = results[0]
+    if score < 50:
+        return None
+    card = CARDS[card_name]
+    embed = embed(card)
+    print(f'Query `{query}` satisifed with `{card_name}` at score `{score}` in channel `{message.channel.id}`')
+    return embed
 
 
 @bot.event
@@ -101,27 +140,19 @@ async def on_message(message):
         else:
             embed = CardText
 
-        # Check for exact match. Fuzzy searcher sometimes misses these.
-        exact_match = CARDS.get(query)
-        if exact_match:
-            embed = embed(exact_match)
-            print(f'Query `{query}` satisfied with exact match in channel `{message.channel.id}`')
+        if not CARDS:
+            await bot.send_message(message.channel, f'No cards loaded. https://netrunnerdb.com might be down.')
+
+        for search in (exact_match, fuzzy_match):
+            match = search(query, CARDS)
+            if match:
+                embed = embed(match)
+                break
+
+        if embed:
             await bot.send_message(message.channel, embed=embed.render())
-            continue
-
-        # Fuzzy match over the card pool.
-        results = process.extract(query, CARDS.keys(), limit=1, scorer=fuzz.token_set_ratio)
-
-        # If high enough scoring match is found, build the embed.
-        if results:
-            card_name, score = results[0]
-            if score >= 50:
-                card = CARDS[card_name]
-                embed = embed(card)
-                print(f'Query `{query}` satisifed with `{card_name}` at score `{score}` in channel `{message.channel.id}`')
-                await bot.send_message(message.channel, embed=embed.render())
-                continue
-        await bot.send_message(message.channel, f'No results for {query}')
+        else:
+            await bot.send_message(message.channel, f'No results for {query}')
 
     # Give other commands a chance to resolve.
     await bot.process_commands(message)
