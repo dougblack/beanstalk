@@ -74,12 +74,10 @@ def exact_match(query, cards):
     and hands back the wrong cards. This ensures that every card is fetchable via
     Beanstalk by using its exact name.
     """
-    exact_match = cards.get(query)
-    if not exact_match:
+    card = cards.get(query)
+    if not card:
         return None
-    embed = embed(exact_match)
-    print(f'Query `{query}` satisfied with exact match in channel `{message.channel.id}`')
-    return embed
+    return card
 
 
 def fuzzy_match(query, cards):
@@ -100,10 +98,7 @@ def fuzzy_match(query, cards):
     card_name, score = results[0]
     if score < 50:
         return None
-    card = cards[card_name]
-    embed = embed(card)
-    print(f'Query `{query}` satisifed with `{card_name}` at score `{score}` in channel `{message.channel.id}`')
-    return embed
+    return cards[card_name]
 
 
 @bot.event
@@ -145,9 +140,10 @@ async def on_message(message):
             await bot.send_message(message.channel, f'My card pool is empty. https://netrunnerdb.com might be down.')
 
         for search in (exact_match, fuzzy_match):
-            match = search(query, CARDS)
-            if match:
-                embed = embed(match)
+            card = search(query, CARDS)
+            if card:
+                embed = embed(card)
+                print(f'{message.channel.id}: `{query}` satisifed with `{card["title"]}` via {search.__name__}')
                 break
 
         if embed:
