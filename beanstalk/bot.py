@@ -52,6 +52,7 @@ async def refresh(*_):
     if not time_since or time_since > 300:
         cached.refresh()
         last_refresh = time.time()
+        from beanstalk.cached import CARDS
         await bot.say('Cache refreshed.')
     else:
         await bot.say(f'Last refresh was only {time_since} seconds ago. Skipping.')
@@ -73,7 +74,7 @@ def exact_match(query, cards):
     and hands back the wrong cards. This ensures that every card is fetchable via
     Beanstalk by using its exact name.
     """
-    exact_match = CARDS.get(query)
+    exact_match = cards.get(query)
     if not exact_match:
         return None
     embed = embed(exact_match)
@@ -91,7 +92,7 @@ def fuzzy_match(query, cards):
     score is less than 50 to prevent seemingly random responses from Beanstalk.
     """
     # Fuzzy match over the card pool.
-    results = process.extract(query, CARDS.keys(), limit=1, scorer=fuzz.token_set_ratio)
+    results = process.extract(query, cards.keys(), limit=1, scorer=fuzz.token_set_ratio)
     if not results:
         return None
     # If score is less than 50, ignore this result. Beanstalk will return no
@@ -99,7 +100,7 @@ def fuzzy_match(query, cards):
     card_name, score = results[0]
     if score < 50:
         return None
-    card = CARDS[card_name]
+    card = cards[card_name]
     embed = embed(card)
     print(f'Query `{query}` satisifed with `{card_name}` at score `{score}` in channel `{message.channel.id}`')
     return embed
