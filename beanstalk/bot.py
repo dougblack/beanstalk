@@ -124,7 +124,7 @@ async def on_message(message):
     if message.author.id == bot.user.id:
         return
 
-    queries = set(re.findall(QUERY_PATTERN, message.content))
+    queries = set(re.findall(QUERY_PATTERN, message.clean_content))
     for query in queries:
 
         # Choose the embed.
